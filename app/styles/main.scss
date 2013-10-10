@@ -1,0 +1,54 @@
+$icon-font-path: "fonts/";
+
+@import 'sass-bootstrap/lib/bootstrap';
+
+header {
+    text-align: center;
+}
+
+// Loans
+.loans {
+	.loan {
+		padding: 0;
+		margin-left: 0;
+		margin-right: -47px;
+		width: 252px;
+
+		.glyphicon-briefcase {
+			margin-top: 5px;
+		}
+
+		input {
+			display: block;
+			padding: 2px 0 2px 5px;
+			border: solid 2px #FFF;
+			color: #888;
+
+			&:hover {
+				border: solid 2px #EEE;
+				color: #000;
+			}
+		}
+
+		#name {
+			color: #000;
+		}
+	}
+}
+
+// Strategies
+.strategies {
+	.strategy {
+		width: 150px;
+		height: 70px;
+
+		padding: 10px;
+
+		border: solid 1px #444;
+	}
+}
+
+// Graph
+#graph {
+	
+}
