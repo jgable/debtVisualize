@@ -150,6 +150,30 @@ require([
 
             amortizeLoan.should.throw('Cannot have a negatively amortized loan, increase minimum payments');
         });
+
+        it('can serialize data for a url', function () {
+            var serialized = loan.serializeForUrl(),
+                otherLoan = new LoanModel({
+                    name: 'Other',
+                    amount: 2000,
+                    interest: 2.5,
+                    payment: 5.1
+                });
+
+            serialized.should.equal('Test|1000|4.5|6');
+
+            loan.set('name', "Something with a space");
+
+            serialized = loan.serializeForUrl();
+
+            serialized.should.equal('Something+with+a+space|1000|4.5|6');
+
+            loans.add(otherLoan);
+
+            serialized = loans.serializeForUrl();
+
+            serialized.should.equal('Something+with+a+space|1000|4.5|6&Other|2000|2.5|5.1');
+        });
     });
 
     describe('Strategies', function () {
@@ -222,6 +246,20 @@ require([
             loan.get('amount').should.equal(988);
             loan2.get('amount').should.equal(440);
             loan3.get('amount').should.equal(678);
+        });
+
+        it('can serialize data for a url', function () {
+            var serialized = strategy.serializeForUrl();
+
+            serialized.should.equal('Test');
+
+            serialized = snowballStrategy.serializeForUrl();
+
+            serialized.should.equal('Snowball|20');
+
+            serialized = strategies.serializeForUrl();
+
+            serialized.should.equal('Test&Snowball|20');
         });
     });
 

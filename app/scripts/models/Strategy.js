@@ -28,6 +28,15 @@ define([
 
         setExtraPlotData: function () {
             // Set no extra data
+        },
+
+        serializeForUrl: function () {
+            return StrategyModel.encodeValueForUrl(this.get('name'));
+        }
+    }, {
+        // TODO: Move to utility file
+        encodeValueForUrl: function (str) {
+            return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A").replace(/%20/g, '+');
         }
     });
 

@@ -28,6 +28,10 @@ define([
             });
 
             return new LoanCollection(newModels);
+        },
+
+        serializeForUrl: function () {
+            return this.invoke('serializeForUrl').join('&');
         }
     }, {
         getAmortizationData: function (loans, strategy, periodDays) {

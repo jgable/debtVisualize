@@ -95,6 +95,10 @@ define([
             _.extend(plot, {
                 snowball: this.get('snowball')
             });
+        },
+
+        serializeForUrl: function () {
+            return _([this.get('name'), this.get('snowball')]).map(StrategyModel.encodeValueForUrl).join('|');
         }
     });
 

@@ -47,9 +47,9 @@ require([
     'models/DebtVisualizerPage',
     'views/DebtVisualizerPage'
 ], function (Backbone, DebtVisualizerPageModel, DebtVisualizerPageView) {
-    Backbone.history.start();
-
     window.APP = new DebtVisualizerPageView({
         el: '#main'
     }).render();
+
+    Backbone.history.start();
 });

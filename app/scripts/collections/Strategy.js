@@ -9,7 +9,11 @@ define([
     'use strict';
 
     var StrategyCollection = Backbone.Collection.extend({
-        model: StrategyModel
+        model: StrategyModel,
+
+        serializeForUrl: function () {
+            return this.invoke('serializeForUrl').join('&');
+        }
     }, {
         makeDefault: function () {
             return new StrategyCollection([

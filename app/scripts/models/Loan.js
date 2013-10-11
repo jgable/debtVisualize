@@ -44,10 +44,20 @@ define([
             this.set('amount', amount - paymentAmount);
 
             return paymentAmount;
+        },
+
+        serializeForUrl: function () {
+            var encode = LoanModel.encodeValueForUrl;
+
+            return _([this.get('name'), this.get('amount'), this.get('interest'), this.get('payment')]).map(encode).join('|');
         }
     }, {
         roundNumberTwoDecimals: function (num) {
             return +(Math.round(num + 'e+2')  + 'e-2');
+        },
+        // TODO: Move to utility file
+        encodeValueForUrl: function (str) {
+            return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A").replace(/%20/g, '+');
         }
     });
 
