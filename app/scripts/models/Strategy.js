@@ -9,7 +9,12 @@ define([
     var StrategyModel = Backbone.Model.extend({
         defaults: {
             name: 'Minimum Payment',
+            description: 'Pay the minimum payment on all loans until they are paid off.',
             selected: false
+        },
+
+        getTemplatePartName: function () {
+            return this.get('name').replace(' ', '_');
         },
 
         applyPayment: function (loans) {
@@ -17,10 +22,12 @@ define([
 
             // By default, just make the minimum payment on each loan
             return loans.map(function (loan) {
-                var paymentAmount = loan.get('payment');
-
-                return loan.makePayment(paymentAmount);
+                return loan.makePayment(loan.get('payment'));
             });
+        },
+
+        setExtraPlotData: function () {
+            // Set no extra data
         }
     });
 

@@ -9,7 +9,8 @@ define([
     var PaybackvisualizationModel = Backbone.Model.extend({
         defaults: {
             loans: null,
-            strategies: null
+            strategies: null,
+            periodDays: 30
         }
     });
 

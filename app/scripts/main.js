@@ -20,13 +20,6 @@ require.config({
         handlebars: {
             exports: 'Handlebars'
         },
-        d3: {
-            exports: 'd3'
-        },
-        rickshaw: {
-            deps: ['jquery', 'd3'],
-            exports: 'Rickshaw'
-        },
         highcharts: {
             deps: ['jquery'],
             exports: '$.highcharts'
@@ -40,7 +33,8 @@ require.config({
         backbone: '../bower_components/backbone/backbone',
         underscore: '../bower_components/underscore/underscore',
         bootstrap: 'vendor/bootstrap',
-        handlebars: '../bower_components/handlebars/handlebars',
+        // Can't use bower handlebars because it has a require optimizer bug
+        handlebars: 'vendor/handlebars',
         d3: '../bower_components/rickshaw/vendor/d3.v2',
         rickshaw: '../bower_components/rickshaw/rickshaw',
         highcharts: '../bower_components/highcharts/highcharts',

@@ -86,6 +86,8 @@ define([
                 events: []
             };
 
+            strategy.setExtraPlotData(prevPlot);
+
             plots.push(prevPlot);
 
             while (value > 0) {
@@ -133,6 +135,9 @@ define([
 
                 // Outside of the object initializer because we don't want to repeat the .map call
                 newPlot.loans.sumPrincipal = sumValues(newPlot.loans.principal);
+
+                // Allow the strategy to add some extra plot data
+                strategy.setExtraPlotData(prevPlot);
 
                 plots.push(newPlot);
 

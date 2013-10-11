@@ -19,19 +19,47 @@ define([
         template: JST.LoanItem,
 
         events: {
-            'blur input': 'updateValues',
-            'click .loan-remove': 'removeLoan'
+            'blur input': 'checkForUpdates',
+            'click .loan-remove': 'removeLoan',
+            'click .loan-update:not(.disabled)': 'updateValues'
         },
 
-        inititialize: function () {
+        initialize: function () {
             // TODO: Validation errors
             this.listenTo(this.model, 'error', this.handleError);
+            
+            this.on('hasChanges', this.toggleUpdateButton);
+        },
+
+        checkForUpdates: function () {
+            var self = this,
+                hasChanges = false;
+
+            this.$('.entry').each(function () {
+                var $this = $(this),
+                    name = $this.attr('name'),
+                    val = $this.val();
+
+                if (name !== 'name') {
+                    val = parseInt(val.replace(/[,\$%]/g, ''), 10);
+                    if (isNaN(val)) {
+                        $this.val(self.model.get(name));
+                        return;
+                    }
+                }
+
+                if (self.model.get(name) !== val) {
+                    hasChanges = true;
+                }
+            });
+
+            this.trigger('hasChanges', hasChanges);
         },
 
         updateValues: function () {
             var self = this;
 
-            this.$('input').each(function () {
+            this.$('.entry').each(function () {
                 var $this = $(this),
                     name = $this.attr('name'),
                     val = $this.val();
@@ -39,17 +67,23 @@ define([
                 if (name !== 'name') {
                     val = parseInt(val, 10);
                     if (isNaN(val)) {
-                        $this.val(this.model.get(name));
+                        $this.val(self.model.get(name));
                         return;
                     }
                 }
 
                 self.model.set(name, val);
             });
+
+            self.trigger('hasChanges', false);
         },
 
         handleError: function (model) {
             console.log('LoanItem error', arguments, model);
+        },
+
+        toggleUpdateButton: function (hasChanges) {
+            this.$('.loan-update').toggleClass('disabled', !hasChanges);
         },
 
         removeLoan: function (ev) {

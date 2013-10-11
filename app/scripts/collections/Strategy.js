@@ -13,6 +13,7 @@ define([
     }, {
         makeDefault: function () {
             return new StrategyCollection([
+                new StrategyModel(),
                 new SnowballStrategyModel({
                     name: 'Snowball',
                     snowball: 20.00,

@@ -1,4 +1,4 @@
-/*global require, mocha, describe, beforeEach, it*/
+/*global require, mocha, describe, beforeEach, afterEach, it*/
 'use strict';
 
 require.config({
@@ -20,16 +20,15 @@ require.config({
         handlebars: {
             exports: 'Handlebars'
         },
-        d3: {
-            exports: 'd3'
-        },
-        rickshaw: {
-            deps: ['jquery', 'd3'],
-            exports: 'Rickshaw'
-        },
         highcharts: {
             deps: ['jquery'],
             exports: '$.highcharts'
+        },
+        moment: {
+            exports: 'moment'
+        },
+        sinon: {
+            exports: 'sinon'
         }
     },
     paths: {
@@ -37,32 +36,39 @@ require.config({
         backbone: '../bower_components/backbone/backbone',
         underscore: '../bower_components/underscore/underscore',
         bootstrap: 'vendor/bootstrap',
-        handlebars: '../bower_components/handlebars/handlebars',
+        // Can't use bower handlebars because it has a require optimizer bug
+        handlebars: 'vendor/handlebars',
         d3: '../bower_components/rickshaw/vendor/d3.v2',
         rickshaw: '../bower_components/rickshaw/rickshaw',
-        highcharts: '../bower_components/highcharts/highcharts'
+        highcharts: '../bower_components/highcharts/highcharts',
+        moment: '../bower_components/moment/moment',
+        sinon: 'vendor/sinon'
     }
 });
 
 require([
     'backbone',
+    'sinon',
     'models/Loan',
     'collections/Loan',
     'models/Strategy',
     'models/SnowballStrategy',
     'collections/Strategy'
-], function (Backbone, LoanModel, LoanCollection, StrategyModel, SnowballStrategyModel, StrategyCollection) {
+], function (Backbone, sinon, LoanModel, LoanCollection, StrategyModel, SnowballStrategyModel, StrategyCollection) {
     describe('RequireJS', function () {
-        it('is setup for the test', function () {
+        it('is setup for the tests', function () {
             return;
         });
     });
 
     describe('Loans', function () {
         var loan,
-            loans;
+            loans,
+            sandbox;
 
         beforeEach(function () {
+            sandbox = sinon.sandbox.create();
+
             loan = new LoanModel({
                 name: 'Test',
                 amount: 1000.00,
@@ -73,7 +79,11 @@ require([
             loans = new LoanCollection([loan]);
         });
 
-        it('can get the decimal version of the amount', function () {
+        afterEach(function () {
+            sandbox.restore();
+        });
+
+        it('can get the decimal version of the interest', function () {
             loan.interestDecimal().should.equal(0.045);
         });
 
@@ -146,9 +156,12 @@ require([
         var strategy,
             snowballStrategy,
             strategies,
-            loans;
+            loans,
+            sandbox;
 
         beforeEach(function () {
+            sandbox = sinon.sandbox.create();
+
             strategy = new StrategyModel({
                 name: 'Test'
             });
@@ -176,6 +189,10 @@ require([
                 interest: 12.0,
                 payment: 11
             })]);
+        });
+
+        afterEach(function () {
+            sandbox.restore();
         });
 
         it('can apply minimum payments', function () {

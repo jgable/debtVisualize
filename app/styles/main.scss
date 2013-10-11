@@ -18,7 +18,7 @@ header {
 			margin-top: 5px;
 		}
 
-		input {
+		.entry {
 			display: block;
 			padding: 2px 0 2px 5px;
 			border: solid 2px #FFF;
@@ -33,20 +33,46 @@ header {
 		#name {
 			color: #000;
 		}
+
+		.loan-buttons {
+			margin-top: 5px;
+			margin-right: 5px;
+		}
+
+		.loan-update {
+			margin-left: 10px;
+		}
 	}
 }
 
 // Strategies
 .strategies {
+	margin: 0;
+	
 	.strategy {
-		width: 150px;
-		height: 70px;
-
+		max-width: 480px;
+		min-height: 220px;
 		padding: 10px;
+		margin: 0 10px 10px 0;
+		
+		.name { 
+			margin-top: 0;
+		}
 
-		border: solid 1px #444;
+		border: solid 2px #DDD;
+
+		.options {
+			legend {
+				font-size: 18px;
+			}
+			#snowball {
+				width: 105px;
+			}
+		}
 	}
 }
+
+.clearBoth { clear: both; }
 
 // Graph
 #graph {

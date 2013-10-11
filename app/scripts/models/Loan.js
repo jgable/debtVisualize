@@ -12,7 +12,8 @@ define([
             amount: null,
             interest: null,
             payment: null,
-            yearDays: 365
+            yearDays: 365,
+            hasChanges: false
         },
 
         interestDecimal: function () {

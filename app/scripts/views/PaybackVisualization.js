@@ -16,18 +16,15 @@ define([
         return +(Math.round(num + 'e+2')  + 'e-2');
     }
 
-    var MinPaymentStrategyModel = StrategyModel.extend({
-
-        // The default strategy implementation is Min Payment only
-
-    });
-
     var PaybackvisualizationView = Views.SubViewableView.extend({
         template: JST.PaybackVisualization,
 
         initialize: function () {
-            this.listenTo(this.model.get('loans'), 'change', this.renderGraph);
-            this.listenTo(this.model.get('strategies'), 'change', this.renderGraph);
+            var loans = this.model.get('loans'),
+                strategies = this.model.get('strategies');
+
+            this.listenTo(loans, 'change add remove', this.renderGraph);
+            this.listenTo(strategies, 'change add remove', this.renderGraph);
 
             Views.SubViewableView.prototype.initialize.apply(this, arguments);
         },
@@ -43,52 +40,13 @@ define([
         },
 
         renderGraph: function () {
-            var $graph = this.$('#graph'),
-                loans = this.model.get('loans'),
-                periodDays = 30,
-                minPaymentStrategy = new MinPaymentStrategyModel(),
+            var self = this,
+                $graph = this.$('#graph'),
                 // TODO: Multiple strategies selection
-                amortizationData = [{
-                    data: loans.amortize(periodDays, minPaymentStrategy),
-                    strategy: minPaymentStrategy
-                }, {
-                    data: loans.amortize(periodDays, this.model.get('strategies').at(0)),
-                    strategy: this.model.get('strategies').at(0)
-                }],
+                amortizationData = this.getStrategyAmortizationData(),
+                // Filled up with data in the getPlotsFromAmortizationData
                 plotLookup = {},
-                series = _(amortizationData).map(function (datum) {
-                    var seriesName = datum.strategy.get('name'),
-                        seriesData = {
-                            // TODO: Colors based on bootstrap theme
-                            name: seriesName,
-                            // Map out the data from the amortize info
-                            data: _.map(datum.data, function (plot, i) {
-                                var id = [seriesName, i].join('-'),
-                                    point;
-                                
-                                // Keep this around so we can look up the data later for tooltips
-                                plotLookup[id] = plot;
-
-                                point = {
-                                    x: i,
-                                    y: roundNumberTwoDecimals(plot.totals.amount),
-                                    id: id
-                                };
-
-                                // If there was an event on this point (paid off loan), highlight it in the graph
-                                if (plot.events && plot.events.length > 0) {
-                                    point.marker = {
-                                        enabled: true,
-                                        fillColor: '#5B5'
-                                    };
-                                }
-
-                                return point;
-                            })
-                        };
-
-                    return seriesData;
-                });
+                series = this.getPlotsFromAmortizationData(amortizationData, plotLookup);
 
             $graph.highcharts({
                 chart: {
@@ -124,42 +82,9 @@ define([
                 },
                 tooltip: {
                     formatter: function () {
-                        var plotData = plotLookup[this.point.id],
-                            titleDateStr = moment().add('M', plotData.period).format('MMMM, YYYY'),
-                            content = '';
-
-                        content += '<span>' + titleDateStr + '</span><br/>';
-                            
-                        if (plotData.events && plotData.events.length > 0) {
-                            content += _.map(plotData.events, function (eventContent) {
-                                var duration = moment.duration(plotData.period, 'M'),
-                                    dateStr = '';
-
-                                if (duration.years()) {
-                                    dateStr += duration.years() + ' Years';
-                                }
-
-                                if (duration.months()) {
-                                    if (dateStr.length > 0) {
-                                        dateStr += ', ' + duration.months() + ' Months';
-                                    } else {
-                                        dateStr += duration.months() + ' Months';
-                                    }
-                                }
-
-                                if (dateStr.length < 1) {
-                                    dateStr += duration.asDays() + ' Days';
-                                }
-
-                                return '<span>' + eventContent + ' in ' + dateStr + '</span><br/>';
-                            }).join('');
-                        }
-
-                        content += '<strong><span>$' + roundNumberTwoDecimals(plotData.loans.sumPayment) + '</span><span> in Total Payments</span></strong><br/>' +
-                            '<span> - $' + roundNumberTwoDecimals(plotData.loans.sumInterest) + '</span><span> interest</span><br/>' +
-                            '<span> - $' + roundNumberTwoDecimals(plotData.loans.sumPrincipal) + '</span><span> principal</span><br/>';
-
-                        return content;
+                        var plotData = plotLookup[this.point.id];
+                        
+                        return self.getPlotPointTooltip(plotData);
                     }
                 },
                 plotOptions: {
@@ -168,7 +93,7 @@ define([
                         marker: {
                             enabled: false,
                             symbol: 'circle',
-                            radius: 2,
+                            radius: 5,
                             states: {
                                 hover: {
                                     enabled: true
@@ -179,6 +104,113 @@ define([
                 },
                 series: series
             });
+        },
+
+        getStrategyAmortizationData: function () {
+            var periodDays = this.model.get('periodDays'),
+                loans = this.model.get('loans');
+
+            return this.model.get('strategies').map(function (strategy) {
+                return {
+                    data: loans.amortize(periodDays, strategy),
+                    strategy: strategy
+                };
+            });
+        },
+
+        getPlotsFromAmortizationData: function (amortizationData, plotLookup) {
+            plotLookup = plotLookup || {};
+
+            return _(amortizationData).map(function (datum) {
+                var seriesName = datum.strategy.get('name'),
+                    seriesData = {
+                        // TODO: Colors based on bootstrap theme
+                        name: seriesName,
+                        // Map out the data from the amortize info
+                        data: _(datum.data).map(function (plot, i) {
+                            var id = [seriesName, i].join('-'),
+                                point;
+                            
+                            // Keep this around so we can look up the data later for tooltips
+                            plotLookup[id] = plot;
+
+                            point = {
+                                x: i,
+                                y: roundNumberTwoDecimals(plot.totals.amount),
+                                id: id,
+                                marker: {
+                                    enabled: false,
+                                    radius: 5,
+                                    states: {
+                                        hover: {
+                                            enabled: true,
+                                            radius: 5
+                                        }
+                                    }
+                                }
+                            };
+
+                            // If there was an event on this point (paid off loan), highlight it in the graph
+                            if (plot.events && plot.events.length > 0) {
+                                point.marker = {
+                                    enabled: true,
+                                    fillColor: '#5B5',
+                                    radius: 5,
+                                    states: {
+                                        hover: {
+                                            fillColor: '#5B5',
+                                            radius: 5
+                                        }
+                                    }
+                                };
+
+                                
+                            }
+
+                            return point;
+                        })
+                    };
+
+                return seriesData;
+            });
+        },
+
+        getPlotPointTooltip: function (plotData) {
+            var titleDateStr = moment().add('M', plotData.period).format('MMMM, YYYY'),
+                content = '';
+
+            content += '<span>' + titleDateStr + '</span><br/>';
+                
+            if (plotData.events && plotData.events.length > 0) {
+                content += _.map(plotData.events, function (eventContent) {
+                    var duration = moment.duration(plotData.period, 'M'),
+                        dateStr = '';
+
+                    if (duration.years()) {
+                        dateStr += duration.years() + ' Years';
+                    }
+
+                    if (duration.months()) {
+                        if (dateStr.length > 0) {
+                            dateStr += ', ' + duration.months() + ' Months';
+                        } else {
+                            dateStr += duration.months() + ' Months';
+                        }
+                    }
+
+                    if (dateStr.length < 1) {
+                        dateStr += duration.asDays() + ' Days';
+                    }
+
+                    return '<span>' + eventContent + ' in ' + dateStr + '</span><br/>';
+                }).join('');
+            }
+
+            content += '<strong><span>$' + roundNumberTwoDecimals(plotData.loans.sumPayment) + '</span><span> in Total Payments</span></strong><br/>' +
+                '<span> - $' + roundNumberTwoDecimals(plotData.loans.sumInterest) + '</span><span> interest</span><br/>' +
+                '<span> - $' + roundNumberTwoDecimals(plotData.loans.sumPrincipal) + '</span><span> principal</span><br/>';
+
+            return content;
         }
     });
 

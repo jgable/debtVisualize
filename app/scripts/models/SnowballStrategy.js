@@ -10,6 +10,7 @@ define([
     var SnowballStrategyModel = StrategyModel.extend({
         defaults: {
             name: 'Snowball',
+            description: 'Pay off lowest balance loans first and add their minimum payment to your subsequent payments on loans.',
             selected: false,
             snowball: 0.00
         },
@@ -32,7 +33,7 @@ define([
 
                 if (amount <= 0) {
                     // Skip this loan if nothing left to pay
-                    memo[loan.id] = payment;
+                    memo[loan.cid] = 0;
 
                     return memo;
                 }
@@ -51,7 +52,7 @@ define([
                     snowballExtra += min;
 
                     // Bug out for next loan
-                    memo[loan.id] = payment;
+                    memo[loan.cid] = payment;
                     return memo;
                 }
 
@@ -75,7 +76,7 @@ define([
                     snowballExtra += min;
                 }
 
-                memo[loan.id] = payment;
+                memo[loan.cid] = payment;
                 return memo;
             }, {});
 
@@ -86,7 +87,13 @@ define([
 
             // Make sure we return the payments array in the same order that we got it in.
             return loans.map(function (loan) {
-                return payments[loan.id];
+                return payments[loan.cid];
+            });
+        },
+
+        setExtraPlotData: function (plot) {
+            _.extend(plot, {
+                snowball: this.get('snowball')
             });
         }
     });

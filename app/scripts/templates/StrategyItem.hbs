@@ -1,1 +1,15 @@
-<h5>{{name}}</h5>
+<h4 class="name">{{name}}</h4>
+
+<p class="description">
+    {{{description}}}
+</p>
+
+{{#isSnowball}}
+<form role="form" class="options">
+  <legend>Options</legend>
+  <div class="form-group">
+    <label for="snowball">Initial Snowball</label>
+    <input type="number" class="form-control" id="snowball" placeholder="20.00" value="{{snowball}}">
+  </div>
+</form>
+{{/isSnowball}}
