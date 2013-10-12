@@ -44,12 +44,11 @@ require.config({
 
 require([
     'backbone',
-    'models/DebtVisualizerPage',
-    'views/DebtVisualizerPage'
-], function (Backbone, DebtVisualizerPageModel, DebtVisualizerPageView) {
-    window.APP = new DebtVisualizerPageView({
-        el: '#main'
-    }).render();
+    'router'
+], function (Backbone, DebtVisualizationAppRouter) {
+    window.APP_ROUTER = new DebtVisualizationAppRouter();
 
-    Backbone.history.start();
+    Backbone.history.start({
+        pushState: false
+    });
 });

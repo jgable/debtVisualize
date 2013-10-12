@@ -1,4 +1,4 @@
-/*global define */
+/*global define, localStorage */
 
 define([
     'underscore',
@@ -15,6 +15,10 @@ define([
 
     return {
         saveToLocalStorage: function (model) {
+            if (!window.localStorage) {
+                return;
+            }
+
             var loansData = model.get('loans').toJSON(),
                 strategiesData = model.get('strategies').toJSON(),
                 storedData = {
@@ -26,6 +30,10 @@ define([
         },
 
         loadFromLocalStorage: function () {
+            if (!window.localStorage) {
+                return;
+            }
+            
             var storedData = localStorage.getItem(storageKey),
                 loans,
                 strategies;

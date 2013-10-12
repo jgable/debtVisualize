@@ -100,6 +100,17 @@ define([
         serializeForUrl: function () {
             return _([this.get('name'), this.get('snowball')]).map(StrategyModel.encodeValueForUrl).join('|');
         }
+    }, {
+        fromSerializedUrl: function (str) {
+            var parts = str.split('|'),
+                name = StrategyModel.decodeValueFromUrl(parts[0]),
+                snowball = parseFloat(StrategyModel.decodeValueFromUrl(parts[1]), 10);
+
+            return new SnowballStrategyModel({
+                name: name,
+                snowball: snowball
+            });
+        }
     });
 
     return SnowballStrategyModel;

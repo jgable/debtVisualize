@@ -23,8 +23,14 @@ define([
             var loans = this.model.get('loans'),
                 strategies = this.model.get('strategies');
 
-            this.listenTo(loans, 'change add remove', this.renderGraph);
-            this.listenTo(strategies, 'change add remove', this.renderGraph);
+            // Throttle the rendering of the graph for when we reset from url data
+            this.renderGraph = _.throttle(this._renderGraph, 500, {
+                leading: false,
+                trailing: false
+            });
+
+            this.listenTo(loans, 'change add remove reset', this.renderGraph, this);
+            this.listenTo(strategies, 'change add remove reset', this.renderGraph, this);
 
             Views.SubViewableView.prototype.initialize.apply(this, arguments);
         },
@@ -39,7 +45,7 @@ define([
             });
         },
 
-        renderGraph: function () {
+        _renderGraph: function () {
             var self = this,
                 $graph = this.$('#graph'),
                 // TODO: Multiple strategies selection

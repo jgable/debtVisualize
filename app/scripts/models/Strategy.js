@@ -1,4 +1,4 @@
-/*global define*/
+/*global define, escape*/
 
 define([
     'underscore',
@@ -36,7 +36,18 @@ define([
     }, {
         // TODO: Move to utility file
         encodeValueForUrl: function (str) {
-            return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, "%2A").replace(/%20/g, '+');
+            return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, '%2A').replace(/%20/g, '+');
+        },
+
+        // TODO: Move to utility file
+        decodeValueFromUrl: function (str) {
+            return decodeURIComponent(str).replace(/\+/g, ' ');
+        },
+
+        fromSerializedUrl: function (str) {
+            return new StrategyModel({
+                name: StrategyModel.decodeValueFromUrl(str)
+            });
         }
     });
 

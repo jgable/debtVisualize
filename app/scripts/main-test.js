@@ -162,7 +162,7 @@ require([
 
             serialized.should.equal('Test|1000|4.5|6');
 
-            loan.set('name', "Something with a space");
+            loan.set('name', 'Something with a space');
 
             serialized = loan.serializeForUrl();
 
@@ -173,6 +173,29 @@ require([
             serialized = loans.serializeForUrl();
 
             serialized.should.equal('Something+with+a+space|1000|4.5|6&Other|2000|2.5|5.1');
+        });
+
+        it('can load from serialized url', function () {
+            var serializedLoan = LoanModel.fromSerializedUrl('Something+with+a+space|1000|4.5|6');
+
+            serializedLoan.get('name').should.equal('Something with a space');
+            serializedLoan.get('amount').should.equal(1000);
+            serializedLoan.get('interest').should.equal(4.5);
+            serializedLoan.get('payment').should.equal(6);
+
+            serializedLoan = LoanCollection.fromSerializedUrl('Something+with+a+space|1000|4.5|6&Other|2000|2.5|5.1');
+
+            serializedLoan.length.should.equal(2);
+
+            serializedLoan.at(0).get('name').should.equal('Something with a space');
+            serializedLoan.at(0).get('amount').should.equal(1000);
+            serializedLoan.at(0).get('interest').should.equal(4.5);
+            serializedLoan.at(0).get('payment').should.equal(6);
+
+            serializedLoan.at(1).get('name').should.equal('Other');
+            serializedLoan.at(1).get('amount').should.equal(2000);
+            serializedLoan.at(1).get('interest').should.equal(2.5);
+            serializedLoan.at(1).get('payment').should.equal(5.1);
         });
     });
 
@@ -260,6 +283,21 @@ require([
             serialized = strategies.serializeForUrl();
 
             serialized.should.equal('Test&Snowball|20');
+        });
+
+        it('can load from url data', function () {
+            var serializedStrat = StrategyModel.fromSerializedUrl('Minimum+Payment');
+
+            serializedStrat.get('name').should.equal('Minimum Payment');
+
+            serializedStrat = StrategyCollection.fromSerializedUrl('Test&Snowball|22.25');
+
+            serializedStrat.length.should.equal(2);
+
+            serializedStrat.at(0).get('name').should.equal('Test');
+
+            serializedStrat.at(1).get('name').should.equal('Snowball');
+            serializedStrat.at(1).get('snowball').should.equal(22.25);
         });
     });
 

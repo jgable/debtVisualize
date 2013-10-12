@@ -34,6 +34,20 @@ define([
             return this.invoke('serializeForUrl').join('&');
         }
     }, {
+        makeDefault: function () {
+            return new LoanCollection([{
+                name: 'Loan #1',
+                amount: 5000.00,
+                interest: 3.1,
+                payment: 110.00
+            }, {
+                name: 'Loan #2',
+                amount: 10000.00,
+                interest: 5.5,
+                payment: 75.00
+            }]);
+        },
+
         getAmortizationData: function (loans, strategy, periodDays) {
             var plots = [],
                 period = 0,
@@ -153,6 +167,15 @@ define([
             }
 
             return plots;
+        },
+
+        fromSerializedUrl: function (urlPart) {
+            var parts = urlPart.split('&'),
+                loans = _(parts).map(function (part) {
+                    return LoanModel.fromSerializedUrl(part);
+                });
+
+            return new LoanCollection(loans);
         }
     });
 
