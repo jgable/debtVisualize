@@ -9,7 +9,11 @@ define([
     'use strict';
 
     var StrategyCollection = Backbone.Collection.extend({
-        model: StrategyModel
+        model: StrategyModel,
+
+        serializeForUrl: function () {
+            return this.invoke('serializeForUrl').join('&');
+        }
     }, {
         makeDefault: function () {
             return new StrategyCollection([
@@ -20,6 +24,20 @@ define([
                     selected: true
                 })
             ]);
+        },
+
+        fromSerializedUrl: function (urlPart) {
+            var stratModels = _.map(urlPart.split('&'), function (part) {
+                var parts = part.split('|');
+
+                if (parts[0] === 'Snowball') {
+                    return SnowballStrategyModel.fromSerializedUrl(part);
+                }
+
+                return StrategyModel.fromSerializedUrl(part);
+            });
+
+            return new StrategyCollection(stratModels);
         }
     });
 

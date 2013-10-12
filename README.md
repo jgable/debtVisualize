@@ -7,7 +7,7 @@ Add some loans, pick a debt payoff strategy and view the graph.
 
 ## Development
 
-This project uses [Yeoman](http://yeoman.io) and the [Yeoman Backbone Generator](https://github.com/yeoman/generator-backbone).  To get started;
+This project was built with [Yeoman](http://yeoman.io) and the [Yeoman Backbone Generator](https://github.com/yeoman/generator-backbone).  To get started;
 
 1. Fork and Clone the repo to your machine
 1. Run `bower install && npm install`
@@ -15,11 +15,9 @@ This project uses [Yeoman](http://yeoman.io) and the [Yeoman Backbone Generator]
 
 ## Roadmap
 
-- Better loan entry forms
-- Strategy view improvements
-- Store loan information in local storage and persist
-- More tests
+- Adding/Removing Strategies via DropDown
 - Highest interest strategy
+- Minimum+ payment
 - TimelineJS integration below graph to highlight achievements
 
 ## License

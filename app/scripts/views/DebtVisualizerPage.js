@@ -17,35 +17,15 @@ define([
     'use strict';
 
     var DebtVisualizerPageView = Views.SubViewableView.extend({
+        template: _.template('<a href="javascript:void(0);" class="pull-right btn btn-info" id="permalink">permalink</span>'),
+
+        events: {
+            'click #permalink': 'permalink'
+        },
 
         initialize: function (attrs) {
-            attrs = attrs || {};
-
-            var loans = new LoanCollection([{
-                    name: 'Loan #1',
-                    amount: 5000.00,
-                    interest: 3.1,
-                    payment: 110.00
-                }, {
-                    name: 'Loan #2',
-                    amount: 10000.00,
-                    interest: 5.5,
-                    payment: 75.00
-                }]),
-                strategies = StrategyCollection.makeDefault(),
-                persistedPageData = persistence.loadFromLocalStorage();
-
-            this.model = this.model || persistedPageData || new DebtVisualizerPageModel({
-                loans: loans,
-                strategies: strategies,
-                visualization: new PaybackVisualizationModel({
-                    loans: loans,
-                    strategies: strategies
-                })
-            });
-
-            this.listenTo(this.model.get('loans'), 'change:name change:amount change:interest change:payment add remove', this.saveDataToLocalStorage);
-            this.listenTo(this.model.get('strategies'), 'change add remove', this.saveDataToLocalStorage);
+            this.listenTo(this.model.get('loans'), 'change add remove reset', this.saveDataToLocalStorage);
+            this.listenTo(this.model.get('strategies'), 'change add remove reset', this.saveDataToLocalStorage);
 
             Views.SubViewableView.prototype.initialize.call(this, attrs);
         },
@@ -68,6 +48,11 @@ define([
 
         saveDataToLocalStorage: function () {
             persistence.saveToLocalStorage(this.model);
+            this.trigger('datasaved');
+        },
+
+        permalink: function () {
+            this.trigger('permalink');
         }
     });
 

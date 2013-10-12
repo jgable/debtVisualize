@@ -41,7 +41,7 @@ define([
                     val = $this.val();
 
                 if (name !== 'name') {
-                    val = parseInt(val.replace(/[,\$%]/g, ''), 10);
+                    val = parseFloat(val.replace(/[,\$%]/g, ''), 10);
                     if (isNaN(val)) {
                         $this.val(self.model.get(name));
                         return;
@@ -65,7 +65,7 @@ define([
                     val = $this.val();
 
                 if (name !== 'name') {
-                    val = parseInt(val, 10);
+                    val = parseFloat(val.replace(/[,\$%]/g, ''), 10);
                     if (isNaN(val)) {
                         $this.val(self.model.get(name));
                         return;

@@ -1,4 +1,4 @@
-/*global define*/
+/*global define, escape*/
 
 define([
     'underscore',
@@ -44,10 +44,40 @@ define([
             this.set('amount', amount - paymentAmount);
 
             return paymentAmount;
+        },
+
+        serializeForUrl: function () {
+            var encode = LoanModel.encodeValueForUrl;
+
+            return _([this.get('name'), this.get('amount'), this.get('interest'), this.get('payment')]).map(encode).join('|');
         }
     }, {
+        // TODO: Move to utility file
         roundNumberTwoDecimals: function (num) {
             return +(Math.round(num + 'e+2')  + 'e-2');
+        },
+        // TODO: Move to utility file
+        encodeValueForUrl: function (str) {
+            return encodeURIComponent(str).replace(/[!'()]/g, escape).replace(/\*/g, '%2A').replace(/%20/g, '+');
+        },
+        // TODO: Move to utility file
+        decodeValueFromUrl: function (str) {
+            return decodeURIComponent(str).replace(/\+/g, ' ');
+        },
+
+        fromSerializedUrl: function (urlPart) {
+            var parts = urlPart.split('|'),
+                name = this.decodeValueFromUrl(parts[0]),
+                amount = parseFloat(this.decodeValueFromUrl(parts[1]), 10) || 0,
+                interest = parseFloat(this.decodeValueFromUrl(parts[2]), 10) || 0,
+                payment = parseFloat(this.decodeValueFromUrl(parts[3]), 10) || 0;
+
+            return new LoanModel({
+                name: name,
+                amount: amount,
+                interest: interest,
+                payment: payment
+            });
         }
     });
 

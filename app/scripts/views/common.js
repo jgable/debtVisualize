@@ -202,7 +202,7 @@ define([
             }
 
             // Render the new models
-            this.renderItems(models);
+            this.renderItems(models.models || models);
         },
 
         renderItems: function (models) {
