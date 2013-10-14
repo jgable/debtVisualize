@@ -18,13 +18,14 @@ define([
 
     var PaybackvisualizationView = Views.SubViewableView.extend({
         template: JST.PaybackVisualization,
+        descriptionTemplate: _.template('By sticking to the <%= bestStrategy %> strategy you will pay off your debt <strong><%= timeSaved %></strong> faster and pay <strong>$<%= amountSaved %></strong> less.'),
 
         initialize: function () {
             var loans = this.model.get('loans'),
                 strategies = this.model.get('strategies');
 
             // Throttle the rendering of the graph for when we reset from url data
-            this.renderGraph = _.throttle(this._renderGraph, 500, {
+            this.renderGraph = _.throttle(this._renderGraph, 1200, {
                 leading: false,
                 trailing: false
             });
@@ -53,6 +54,9 @@ define([
                 // Filled up with data in the getPlotsFromAmortizationData
                 plotLookup = {},
                 series = this.getPlotsFromAmortizationData(amortizationData, plotLookup);
+
+            // Update the blurb about payoff.
+            this.updateDescription(amortizationData);
 
             $graph.highcharts({
                 chart: {
@@ -110,6 +114,39 @@ define([
                 },
                 series: series
             });
+        },
+
+        updateDescription: function (amortizationData) {
+            var periodDays = this.model.get('periodDays'),
+                savedDays,
+                amountSaved,
+                bestStrategy,
+                worstStrategy,
+                descriptionData,
+                descriptionContent;
+
+            _(amortizationData).each(function (datum) {
+                if (!bestStrategy || bestStrategy.data.length > datum.data.length) {
+                    bestStrategy = datum;
+                }
+
+                if (!worstStrategy || worstStrategy.data.length < datum.data.length) {
+                    worstStrategy = datum;
+                }
+            });
+
+            savedDays = (worstStrategy.data.length - bestStrategy.data.length) * periodDays;
+            amountSaved = (_(worstStrategy.data).last().totals.payment - _(bestStrategy.data).last().totals.payment);
+
+            descriptionData = {
+                bestStrategy: bestStrategy.strategy.get('name'),
+                timeSaved: moment.duration(savedDays, 'd').humanize(),
+                amountSaved: amountSaved.toFixed(2)
+            };
+
+            descriptionContent = this.descriptionTemplate(descriptionData);
+
+            this.$('.description').html(descriptionContent);
         },
 
         getStrategyAmortizationData: function () {

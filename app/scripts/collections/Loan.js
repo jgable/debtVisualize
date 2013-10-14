@@ -139,7 +139,7 @@ define([
                     loans: {
                         sumPayment: sumValues(paymentApplied),
                         sumInterest: sumValues(interestApplied),
-                        // sumPrincipal: 0
+                        // sumPrincipal: #
                         interest: interestApplied,
                         payment: paymentApplied,
                         principal: calculatePrincipal(paymentApplied, interestApplied)
