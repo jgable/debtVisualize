@@ -1,7 +1,7 @@
-Debt Visualizer
+Debt Payback Visualizer
 =
 
-A [Backbone](http://backbonejs.org) implementation of a simple debt visualization page.
+A [Backbone](http://backbonejs.org) implementation of a [simple debt visualization](http://debtgraph.jacobgable.com) page.
 
 Add some loans, pick a debt payoff strategy and view the graph.
 
@@ -15,6 +15,7 @@ This project was built with [Yeoman](http://yeoman.io) and the [Yeoman Backbone 
 
 ## Roadmap
 
+- Better responsive styles (Loan entry is horrible)
 - Adding/Removing Strategies via DropDown
 - Highest interest strategy
 - Minimum+ payment

@@ -20,6 +20,7 @@ define([
 
         events: {
             'blur input': 'checkForUpdates',
+            'keyup input': 'checkForUpdates',
             'click .loan-remove': 'removeLoan',
             'click .loan-update:not(.disabled)': 'updateValues'
         },
