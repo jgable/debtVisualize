@@ -2,6 +2,9 @@
   "name": "debtvisualize",
   "version": "0.0.0",
   "dependencies": {},
+  "scripts": {
+    "test": "grunt jshint test"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-copy": "~0.4.0",

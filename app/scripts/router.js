@@ -52,7 +52,6 @@ define([
             // If we already have a rendered view (hitting back button)
             // just update its model.
             if (this.currentView) {
-                // silently set these so they don't re-render the graph over top of each other
                 this.currentView.model.get('loans').reset(loans.models);
                 this.currentView.model.get('strategies').reset(strategies.models);
 
@@ -73,7 +72,7 @@ define([
                     model: pageModel
                 });
 
-            view.render();
+            this.currentView = view;
 
             view.on('permalink', function () {
                 var loanData = pageModel.get('loans').serializeForUrl(),
@@ -84,7 +83,7 @@ define([
                 });
             });
 
-            this.currentView = view;
+            view.render();
         }
     });
 

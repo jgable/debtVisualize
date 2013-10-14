@@ -29,6 +29,21 @@ define([
 
             Views.SubViewableView.prototype.initialize.call(this, attrs);
         },
+
+        render: function () {
+            var self = this,
+                $loading = this.$('.loading');
+
+            if ($loading.is(':visible')) {
+                $loading.fadeOut('slow', function () {
+                    Views.SubViewableView.prototype.render.apply(self, arguments);
+                });
+
+                return this;
+            }
+
+            return Views.SubViewableView.prototype.render.apply(this, arguments);
+        },
         
         afterRender: function () {
             var LoansSub = new LoansView({
