@@ -1,14 +1,34 @@
-<div class="col-md-1">
-  <span class="glyphicon glyphicon-briefcase"></span>
+<div class="form-group">
+    <label class="col-lg-5 control-label" for="name-{{cid}}">Name</label>
+    <div class="input-group col-lg-7">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-briefcase"></span></span>
+        <input type="text" class="form-control entry" name="name" id="name-{{cid}}" placeholder="Student Loan" value="{{name}}">
+    </div>
 </div>
-<div class="col-md-9">
-  <input id="name" class="entry" name="name" type="text" placeholder="Name" value="{{name}}">
-  <input id="amount" class="entry" name="amount" type="number" step="any" min="0" placeholder="Amount" value="{{amount}}">
-  <input id="interest" class="entry" name="interest" type="number" step="any" min="0" placeholder="Interest" value="{{interest}}">
-  <input id="payment" class="entry" name="payment" type="number" step="any" min="0" placeholder="Monthly Payment" value="{{payment}}">
-  
-  <div class="loan-buttons">
-  	<a href="javascript:void(0);" class="btn btn-primary btn-xs loan-update pull-right disabled">update</a>
-  	<a href="javascript:void(0);" class="btn btn-primary btn-xs loan-remove pull-right">remove</a>
-  </div>
+<div class="form-group">
+    <label class="col-lg-5 control-label" for="amount-{{cid}}">Amount</label>
+    <div class="input-group col-lg-7">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-usd"></span></span>
+        <input type="number" class="form-control entry" name="amount" id="amount-{{cid}}"  step="any" min="0" placeholder="40000.00" value="{{amount}}">
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-lg-5 control-label" for="payment-{{cid}}">Monthly Payment</label>
+    <div class="input-group col-lg-7">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-usd"></span></span>
+        <input type="number" class="form-control entry" name="payment" id="payment-{{cid}}" step="any" min="0" placeholder="305.00" value="{{payment}}">
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-lg-5 control-label" for="interest-{{cid}}">Interest (APR)</label>
+    <div class="input-group col-lg-7">
+        <span class="input-group-addon">%</span>
+        <input type="number" class="form-control entry" name="interest" id="interest-{{cid}}" step="any" min="0" placeholder="4.3" value="{{interest}}">
+    </div>
+</div>
+<div class="form-group buttons">
+    <div class="col-md-offset-2 col-md-10">
+      <a href="javascript:void(0);" class="btn btn-primary btn-xs loan-update pull-right disabled">update</a>
+      <a href="javascript:void(0);" class="btn btn-primary btn-xs loan-remove pull-right">remove</a>
+    </div>
 </div>

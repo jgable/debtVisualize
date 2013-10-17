@@ -326,7 +326,6 @@ module.exports = function (grunt) {
         'coffee',
         'createDefaultTemplate',
         'mustache',
-        'compass',
         'connect:test',
         'mocha'
     ]);
@@ -347,6 +346,11 @@ module.exports = function (grunt) {
         'copy',
         'rev',
         'usemin'
+    ]);
+
+    grunt.registerTask('validate', [
+        'jshint',
+        'test'
     ]);
 
     grunt.registerTask('default', [

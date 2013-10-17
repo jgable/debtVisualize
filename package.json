@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "dependencies": {},
   "scripts": {
-    "test": "grunt jshint test"
+    "test": "grunt validate"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -28,7 +28,8 @@
     "load-grunt-tasks": "~0.1.0",
     "connect-livereload": "~0.2.0",
     "time-grunt": "~0.1.1",
-    "grunt-contrib-handlebars": "~0.5.11"
+    "grunt-contrib-handlebars": "~0.5.11",
+    "grunt-cli": "~0.1.9"
   },
   "engines": {
     "node": ">=0.8.0"

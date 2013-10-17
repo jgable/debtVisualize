@@ -16,37 +16,14 @@ header {
 
 // Loans
 .loans {
+	> h3 {
+		padding-bottom: 15px;
+	}
 	.loan {
-		padding: 0;
-		margin-left: 0;
-		margin-right: -47px;
-		width: 252px;
-
-		.glyphicon-briefcase {
-			margin-top: 5px;
+		.buttons {
+			height: 30px;
+			margin-right: -15px;
 		}
-
-		.entry {
-			display: block;
-			padding: 2px 0 2px 5px;
-			border: solid 2px #FFF;
-			color: #888;
-
-			&:hover {
-				border: solid 2px #EEE;
-				color: #000;
-			}
-		}
-
-		#name {
-			color: #000;
-		}
-
-		.loan-buttons {
-			margin-top: 5px;
-			margin-right: 5px;
-		}
-
 		.loan-update {
 			margin-left: 10px;
 		}
@@ -55,26 +32,13 @@ header {
 
 // Strategies
 .strategies {
-	margin: 0;
-	
 	.strategy {
-		max-width: 480px;
-		min-height: 220px;
-		padding: 10px;
-		margin: 0 10px 10px 0;
-		
-		.name { 
-			margin-top: 0;
+		.description {
+			min-height: 70px;
 		}
-
-		border: solid 2px #DDD;
-
 		.options {
-			legend {
-				font-size: 18px;
-			}
 			#snowball {
-				width: 105px;
+				
 			}
 		}
 	}

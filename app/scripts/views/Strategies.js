@@ -13,7 +13,7 @@ define([
         StrategyItemView;
 
     StrategyItemView = Views.TemplateView.extend({
-        className: 'strategy col-md-6',
+        className: 'strategy col-sm-6 col-md-4',
         template: JST.StrategyItem,
 
         events: {
