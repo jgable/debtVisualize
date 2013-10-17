@@ -13,8 +13,11 @@ define([
         LoanItemView;
 
     LoanItemView = Views.TemplateView.extend({
-        tagName: 'li',
-        className: 'loan row',
+        tagName: 'form',
+        attributes: {
+            role: 'form'
+        },
+        className: 'loan form-horizontal col-sm-6 col-md-4',
 
         template: JST.LoanItem,
 
@@ -30,6 +33,14 @@ define([
             this.listenTo(this.model, 'error', this.handleError);
             
             this.on('hasChanges', this.toggleUpdateButton);
+        },
+
+        getTemplateData: function () {
+            var data = this.model.toJSON();
+
+            data.cid = this.model.cid;
+
+            return data;
         },
 
         checkForUpdates: function () {

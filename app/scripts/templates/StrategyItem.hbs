@@ -1,15 +1,27 @@
-<h4 class="name">{{name}}</h4>
-
-<p class="description">
-    {{{description}}}
-</p>
-
-{{#isSnowball}}
-<form role="form" class="options">
-  <legend>Options</legend>
-  <div class="form-group">
-    <label for="snowball">Initial Snowball</label>
-    <input type="number" class="form-control" id="snowball" placeholder="20.00" value="{{snowball}}">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{name}}</h3>
   </div>
-</form>
-{{/isSnowball}}
+  <div class="panel-body">
+    <p class="description">
+    	{{{description}}}
+	</p>
+
+    <form role="form" class="options">
+      <legend>Options</legend>
+        {{#isMinimum_Payment}}
+          <div class="form-group">
+            <label>None</label>
+            <input type="number" class="form-control hidden" placeholder="20.00" value="{{snowball}}">
+          </div>
+        {{/isMinimum_Payment}}
+        {{#isSnowball}}
+          <div class="form-group">
+            <label for="snowball">Initial Snowball</label>
+            <input type="number" class="form-control" id="snowball" placeholder="20.00" value="{{snowball}}">
+          </div>
+        {{/isSnowball}}
+    </form>
+    
+  </div>
+</div>
