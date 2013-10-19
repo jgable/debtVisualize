@@ -26,6 +26,82 @@ define([
             });
         },
 
+        getExtraPeriodPaymentAmount: function () {
+            return 0;
+        },
+
+        makePayments: function (loans) {
+            var self = this,
+                periodExtra = this.getExtraPeriodPaymentAmount(),
+                paidOffLoans = [],
+                payments;
+
+            payments = _(loans).reduce(function (memo, loan) {
+                var min = loan.get('payment'),
+                    amount = loan.get('amount'),
+                    payment = min;
+
+                if (amount <= 0) {
+                    // Skip this loan if nothing left to pay
+                    memo[loan.cid] = 0;
+
+                    return memo;
+                }
+
+                // If the min payment will cover the amount left
+                if (min > amount) {
+                    payment = amount;
+
+                    // Add the left over to the extra for the next loan
+                    periodExtra += (min - amount);
+
+                    // Pay off the loan
+                    payment = loan.makePayment(payment);
+
+                    // Add to the paid off loans for later
+                    paidOffLoans.push(loan);
+
+                    // Bug out for next loan
+                    memo[loan.cid] = payment;
+                    return memo;
+                }
+
+                payment = min + periodExtra;
+
+                // If the periodExtra and min cover the amount left.
+                if (payment > amount) {
+                    // Keep the left over on the amount extra for next loan
+                    periodExtra = payment - amount;
+                    // Pay off the remaining
+                    payment = amount;
+                } else {
+                    // Applying all the extra monies to the loan
+                    periodExtra = 0;
+                }
+
+                payment = loan.makePayment(payment);
+
+                // If we paid off the loan, add to the paid off loans for later
+                if (loan.get('amount') <= 0) {
+                    paidOffLoans.push(loan);
+                }
+
+                memo[loan.cid] = payment;
+                return memo;
+            }, {});
+
+            // Allow the strategy to do something with the paid off loans this period
+            _(paidOffLoans).each(function (loan) {
+                self.handlePaidOffLoan(loan);
+            });
+
+            return payments;
+        },
+
+        handlePaidOffLoan: function () {
+            // Do nothing with paid off loans
+        },
+
         setExtraPlotData: function () {
             // Set no extra data
         },
