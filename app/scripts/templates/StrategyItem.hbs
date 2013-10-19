@@ -19,6 +19,20 @@
           <div class="form-group">
             <label for="snowball">Initial Snowball</label>
             <input type="number" class="form-control" id="snowball" placeholder="20.00" value="{{snowball}}">
+
+            <label class="payment-focus-label">Payment Focus</label>
+            <div class="radio">
+              <label>
+                <input type="radio" name="focus" id="focusAmount" value="amount" {{#focusAmount}}checked{{/focusAmount}}>
+                Lowest Balance
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="focus" id="focusInterest" value="-interest" {{^focusAmount}}checked{{/focusAmount}}>
+                Highest Interest
+              </label>
+            </div>
           </div>
         {{/isSnowball}}
     </form>

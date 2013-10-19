@@ -20,6 +20,7 @@ define([
             'keyup #snowball': 'updateSnowball',
             'change #snowball': 'updateSnowball',
             'input #snowball': 'updateSnowball',
+            'change #focusAmount,#focusInterest': 'updateFocus',
             'submit form': 'suppressForm'
         },
 
@@ -28,12 +29,22 @@ define([
 
             data['is' + this.model.getTemplatePartName()] = true;
 
+            if (data.focus) {
+                data.focusAmount = !!data.focus.match(/amount/g);
+            }
+
             return data;
         },
 
         updateSnowball: _.throttle(function () {
             this.model.set('snowball', parseInt(this.$('#snowball').val(), 10));
         }, 1000, { leading: false, trailing: false }),
+
+        updateFocus: function (ev) {
+            var $radio = $(ev.currentTarget);
+
+            this.model.set({focus: $radio.val()});
+        },
 
         suppressForm: function (ev) {
             if (ev) {

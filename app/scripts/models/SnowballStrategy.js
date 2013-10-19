@@ -3,92 +3,29 @@
 define([
     'underscore',
     'backbone',
-    'models/Strategy'
-], function (_, Backbone, StrategyModel) {
+    'models/Strategy',
+    'models/SortedLoanPaymentStrategy'
+], function (_, Backbone, StrategyModel, SortedStrategyModel) {
     'use strict';
 
-    var SnowballStrategyModel = StrategyModel.extend({
+    var SnowballStrategyModel = SortedStrategyModel.extend({
         defaults: {
             name: 'Snowball',
-            description: 'Pay off lowest balance loans first and add their minimum payment to your subsequent payments on loans.',
-            selected: false,
+            description: 'Pay off lowest balance loans first and add their minimum payment to your subsequent payments.',
+            focus: 'amount',
             snowball: 0.00
         },
 
-        applyPayment: function (loans) {
-            var payments = [],
-                sortedLoans,
-                snowball = this.get('snowball'),
-                snowballExtra = 0;
+        sortLoansBy: function (loan) {
+            var focus = this.get('focus') || 'amount',
+                direction = 1;
 
-            // Order loans by least amount
-            sortedLoans = loans.sortBy(function (loan) {
-                return loan.get('amount');
-            });
-
-            payments = _(sortedLoans).reduce(function (memo, loan) {
-                var min = loan.get('payment'),
-                    amount = loan.get('amount'),
-                    payment = min;
-
-                if (amount <= 0) {
-                    // Skip this loan if nothing left to pay
-                    memo[loan.cid] = 0;
-
-                    return memo;
-                }
-
-                // If the min payment will cover the amount left
-                if (min > amount) {
-                    payment = amount;
-
-                    // Add the left over to the snowball
-                    snowball += (min - amount);
-
-                    // Pay off the loan
-                    payment = loan.makePayment(payment);
-
-                    // Update the snowball amount to include the paid off loans minimum
-                    snowballExtra += min;
-
-                    // Bug out for next loan
-                    memo[loan.cid] = payment;
-                    return memo;
-                }
-
-                payment = min + snowball;
-
-                // If the snowball and min cover the amount left.
-                if (payment > amount) {
-                    // Keep the left over on the snowball
-                    snowball = payment - amount;
-                    // Pay off the remaining
-                    payment = amount;
-                } else {
-                    // Applying all the snowball to the loan
-                    snowball = 0;
-                }
-
-                payment = loan.makePayment(payment);
-
-                // If we paid off the loan, add the payment to the snowball.
-                if (loan.get('amount') <= 0) {
-                    snowballExtra += min;
-                }
-
-                memo[loan.cid] = payment;
-                return memo;
-            }, {});
-
-            // Increase the size of the snowball if we paid off any loans
-            if (snowballExtra) {
-                this.set('snowball', this.get('snowball') + snowballExtra);
+            if (focus.slice(0, 1) === '-') {
+                direction = -1;
+                focus = focus.slice(1);
             }
 
-            // Make sure we return the payments array in the same order that we got it in.
-            return loans.map(function (loan) {
-                return payments[loan.cid];
-            });
+            return direction * loan.get(focus);
         },
 
         setExtraPlotData: function (plot) {
