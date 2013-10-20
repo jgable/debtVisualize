@@ -1,4 +1,4 @@
-/*global define, localStorage */
+/*global define */
 
 define([
     'underscore',
@@ -11,11 +11,30 @@ define([
 ], function (_, DebtVisualizerPageModel, LoanCollection, StrategyCollection, StrategyModel, SnowballStrategyModel, PaybackVisualizationModel) {
     'use strict';
 
-    var storageKey = 'pageData';
+    var storageKey = 'pageData',
+        storage = window.localStorage;
 
     return {
+        isLocalStorageAvailable: function () {
+            var testKey = 'qeTest';
+
+            if (!storage) {
+                return false;
+            }
+
+            try {
+                // Try and catch quota exceeded errors
+                storage.setItem(testKey, '1');
+                storage.removeItem(testKey);
+            } catch (error) {
+                return false;
+            }
+
+            return true;
+        },
+
         saveToLocalStorage: function (model) {
-            if (!window.localStorage) {
+            if (!this.isLocalStorageAvailable()) {
                 return;
             }
 
@@ -26,15 +45,15 @@ define([
                     strategies: strategiesData
                 };
 
-            localStorage.setItem(storageKey, JSON.stringify(storedData));
+            storage.setItem(storageKey, JSON.stringify(storedData));
         },
 
         loadFromLocalStorage: function () {
-            if (!window.localStorage) {
+            if (!this.isLocalStorageAvailable()) {
                 return;
             }
             
-            var storedData = localStorage.getItem(storageKey),
+            var storedData = storage.getItem(storageKey),
                 loans,
                 strategies;
 
